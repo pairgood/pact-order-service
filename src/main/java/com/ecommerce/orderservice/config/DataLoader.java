@@ -34,7 +34,7 @@ public class DataLoader implements CommandLineRunner {
         
         // Order 1: John Doe's gaming setup
         orders.add(createOrder(1L, 1L, "123 Main St, Anytown, ST 12345", 
-                              Order.OrderStatus.COMPLETED, LocalDateTime.now().minusDays(5),
+                              Order.OrderStatus.DELIVERED, LocalDateTime.now().minusDays(5),
                               createOrderItems(
                                   new OrderItemData(1L, "Gaming Laptop Pro", 1, new BigDecimal("1299.99")),
                                   new OrderItemData(2L, "Wireless Gaming Mouse", 1, new BigDecimal("49.99")),
@@ -43,7 +43,7 @@ public class DataLoader implements CommandLineRunner {
         
         // Order 2: Jane Smith's book collection
         orders.add(createOrder(2L, 2L, "456 Oak Ave, Springfield, IL 62701", 
-                              Order.OrderStatus.COMPLETED, LocalDateTime.now().minusDays(3),
+                              Order.OrderStatus.DELIVERED, LocalDateTime.now().minusDays(3),
                               createOrderItems(
                                   new OrderItemData(6L, "Microservices Architecture", 2, new BigDecimal("39.99")),
                                   new OrderItemData(7L, "Spring Boot in Action", 1, new BigDecimal("44.99")),
@@ -90,7 +90,7 @@ public class DataLoader implements CommandLineRunner {
         }
         
         System.out.println("✅ Created " + orders.size() + " orders with various statuses");
-        System.out.println("📋 Statuses: COMPLETED, SHIPPED, PROCESSING, PENDING, CANCELLED");
+        System.out.println("📋 Statuses: DELIVERED, SHIPPED, PROCESSING, PENDING, CANCELLED");
     }
     
     private Order createOrder(Long id, Long userId, String shippingAddress, 
