@@ -31,20 +31,22 @@ jobs:
 
     - name: Make gradlew executable
       run: chmod +x ./gradlew
+      working-directory: order-service
 
     - name: Run tests
       run: ./gradlew test
+      working-directory: order-service
 
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results
-        path: build/test-results/test/
+        path: order-service/build/test-results/test/
 
     - name: Upload coverage reports
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: coverage-reports
-        path: build/reports/jacoco/
+        path: order-service/build/reports/jacoco/
