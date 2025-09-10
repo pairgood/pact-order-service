@@ -18,6 +18,12 @@ public class ProductServiceClient {
         this.webClient = WebClient.builder().build();
     }
     
+    // Constructor for testing with custom base URL
+    public ProductServiceClient(String baseUrl) {
+        this.webClient = WebClient.builder().build();
+        this.productServiceUrl = baseUrl;
+    }
+    
     public OrderService.ProductDto getProduct(Long productId) {
         return webClient.get()
             .uri(productServiceUrl + "/api/products/" + productId)

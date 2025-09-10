@@ -14,11 +14,17 @@ public class UserServiceClient {
     @Value("${services.user-service.url:http://localhost:8081}")
     private String userServiceUrl;
     
-    @Autowired
+    @Autowired(required = false)
     private TelemetryClient telemetryClient;
     
     public UserServiceClient() {
         this.webClient = WebClient.builder().build();
+    }
+    
+    // Constructor for testing with custom base URL
+    public UserServiceClient(String baseUrl) {
+        this.webClient = WebClient.builder().build();
+        this.userServiceUrl = baseUrl;
     }
     
     public boolean validateUser(Long userId) {
@@ -33,11 +39,15 @@ public class UserServiceClient {
                 .block();
             
             long duration = System.currentTimeMillis() - startTime;
-            telemetryClient.recordServiceCall("user-service", "validate_user", "GET", url, duration, 200);
+            if (telemetryClient != null) {
+                telemetryClient.recordServiceCall("user-service", "validate_user", "GET", url, duration, 200);
+            }
             return true;
         } catch (Exception e) {
             long duration = System.currentTimeMillis() - startTime;
-            telemetryClient.recordServiceCall("user-service", "validate_user", "GET", url, duration, 404);
+            if (telemetryClient != null) {
+                telemetryClient.recordServiceCall("user-service", "validate_user", "GET", url, duration, 404);
+            }
             return false;
         }
     }
