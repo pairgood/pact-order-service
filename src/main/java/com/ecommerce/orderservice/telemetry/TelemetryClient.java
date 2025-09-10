@@ -24,6 +24,13 @@ public class TelemetryClient {
         this.webClient = WebClient.builder().build();
     }
     
+    // Constructor for testing with custom base URL and service name
+    public TelemetryClient(String baseUrl, String serviceName) {
+        this.webClient = WebClient.builder().build();
+        this.telemetryServiceUrl = baseUrl;
+        this.serviceName = serviceName;
+    }
+    
     public String startTrace(String operation, String httpMethod, String httpUrl, String userId) {
         String traceId = generateTraceId();
         String spanId = generateSpanId();
