@@ -5,13 +5,11 @@ import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.ecommerce.orderservice.telemetry.TelemetryClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.Map;
 
@@ -21,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 class TelemetryServicePactTest {
 
     @Pact(consumer = "order-service", provider = "telemetry-service")
-    public RequestResponsePact sendTelemetryEventPact(PactDslWithProvider builder) {
+    public V4Pact sendTelemetryEventPact(PactDslWithProvider builder) {
         return builder
             .given("telemetry service is available")
             .uponReceiving("a request to send telemetry event")
@@ -37,12 +35,24 @@ class TelemetryServicePactTest {
                 .stringType("serviceName", "order-service")
                 .stringType("operation")
                 .stringType("eventType")
-                .stringType("timestamp")
+                .stringType("httpMethod")
+                .stringType("httpUrl")
+                .stringType("userId")
                 .stringType("status")
+                .array("timestamp", array -> array // LocalDateTime serializes as [year, month, day, hour, minute, second, nanosecond]
+                    .numberType(2025)    // year
+                    .numberType(1)       // month  
+                    .numberType(1)       // day
+                    .numberType(0)       // hour
+                    .numberType(0)       // minute
+                    .numberType(0)       // second
+                    .numberType(0)       // nanosecond
+                )
             ).build())
             .willRespondWith()
             .status(200)
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Test

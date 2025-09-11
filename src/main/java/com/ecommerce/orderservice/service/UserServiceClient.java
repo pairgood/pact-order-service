@@ -34,6 +34,7 @@ public class UserServiceClient {
         try {
             webClient.get()
                 .uri(url)
+                .header("Accept", "application/json")
                 .retrieve()
                 .bodyToMono(Object.class)
                 .block();

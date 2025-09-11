@@ -5,14 +5,12 @@ import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.ecommerce.orderservice.service.OrderService;
 import com.ecommerce.orderservice.service.ProductServiceClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -23,15 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ProductServicePactTest {
 
     @Pact(consumer = "order-service", provider = "product-service")
-    public RequestResponsePact getProductPact(PactDslWithProvider builder) {
+    public V4Pact getProductPact(PactDslWithProvider builder) {
         return builder
             .given("product 1 exists")
             .uponReceiving("a request to get product 1")
             .path("/api/products/1")
             .method("GET")
-            .headers(Map.of(
-                "Accept", "application/json"
-            ))
+            .headers(Map.of("Accept", "application/json"))
             .willRespondWith()
             .status(200)
             .headers(Map.of("Content-Type", "application/json"))
@@ -40,22 +36,22 @@ class ProductServicePactTest {
                 .stringType("name", "Test Product")
                 .numberType("price", 99.99)
             ).build())
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Pact(consumer = "order-service", provider = "product-service")
-    public RequestResponsePact getProductNotFoundPact(PactDslWithProvider builder) {
+    public V4Pact getProductNotFoundPact(PactDslWithProvider builder) {
         return builder
             .given("product 999 does not exist")
             .uponReceiving("a request to get product 999")
             .path("/api/products/999")
             .method("GET")
-            .headers(Map.of(
-                "Accept", "application/json"
-            ))
+            .headers(Map.of("Accept", "application/json"))
             .willRespondWith()
             .status(404)
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Test

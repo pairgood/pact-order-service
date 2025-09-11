@@ -4,7 +4,7 @@ import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.ecommerce.orderservice.service.UserServiceClient;
 import org.junit.jupiter.api.Test;
@@ -18,35 +18,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserServicePactTest {
 
     @Pact(consumer = "order-service", provider = "user-service")
-    public RequestResponsePact validateUserExistsPact(PactDslWithProvider builder) {
+    public V4Pact validateUserExistsPact(PactDslWithProvider builder) {
         return builder
             .given("user 1 exists")
             .uponReceiving("a request to validate user 1")
             .path("/api/users/1")
             .method("GET")
-            .headers(Map.of(
-                "Accept", "application/json"
-            ))
+            .headers(Map.of("Accept", "application/json"))
             .willRespondWith()
             .status(200)
             .headers(Map.of("Content-Type", "application/json"))
             .body("{\"id\": 1, \"email\": \"user@example.com\"}")
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Pact(consumer = "order-service", provider = "user-service")
-    public RequestResponsePact validateUserNotFoundPact(PactDslWithProvider builder) {
+    public V4Pact validateUserNotFoundPact(PactDslWithProvider builder) {
         return builder
             .given("user 999 does not exist")
             .uponReceiving("a request to validate user 999")
             .path("/api/users/999")
             .method("GET")
-            .headers(Map.of(
-                "Accept", "application/json"
-            ))
+            .headers(Map.of("Accept", "application/json"))
             .willRespondWith()
             .status(404)
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Test
