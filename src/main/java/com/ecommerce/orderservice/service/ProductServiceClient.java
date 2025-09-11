@@ -27,6 +27,7 @@ public class ProductServiceClient {
     public OrderService.ProductDto getProduct(Long productId) {
         return webClient.get()
             .uri(productServiceUrl + "/api/products/" + productId)
+            .header("Accept", "application/json")
             .retrieve()
             .bodyToMono(OrderService.ProductDto.class)
             .block();

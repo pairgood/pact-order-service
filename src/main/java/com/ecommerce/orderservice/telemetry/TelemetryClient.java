@@ -129,6 +129,8 @@ public class TelemetryClient {
         try {
             webClient.post()
                 .uri(telemetryServiceUrl + "/api/telemetry/events")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .bodyValue(eventData)
                 .retrieve()
                 .bodyToMono(Void.class)

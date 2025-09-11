@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
     id 'jacoco'
+    id 'au.com.dius.pact' version '4.6.14'
 }
 
 group = 'com.ecommerce'
@@ -28,8 +29,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
     
-    // Add Pact consumer dependencies
-    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.2'
+    // Add Pact consumer dependencies - updated for Spring Boot 3.x compatibility
+    testImplementation 'au.com.dius.pact.consumer:junit5:4.6.14'
 }
 
 tasks.named('test') {
@@ -58,4 +59,15 @@ task pactTest(type: Test) {
     include '**/*PactTest.*'
     outputs.dir("${project.buildDir}/pacts")
     finalizedBy jacocoTestReport
+}
+
+// Pact configuration for contract publishing
+pact {
+    publish {
+        pactDirectory = "${project.buildDir}/pacts"
+        pactBrokerUrl = System.getenv('PACT_BROKER_BASE_URL') ?: 'https://pairgood.pactflow.io'
+        pactBrokerToken = System.getenv('PACT_BROKER_TOKEN')
+        tags = [System.getenv('GIT_BRANCH') ?: 'main']
+        version = project.version
+    }
 }

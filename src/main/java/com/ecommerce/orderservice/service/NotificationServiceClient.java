@@ -28,6 +28,8 @@ public class NotificationServiceClient {
         try {
             webClient.post()
                 .uri(notificationServiceUrl + "/api/notifications/order-confirmation")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .bodyValue(Map.of("orderId", orderId, "userId", userId))
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -42,6 +44,8 @@ public class NotificationServiceClient {
         try {
             webClient.post()
                 .uri(notificationServiceUrl + "/api/notifications/order-status")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .bodyValue(Map.of("orderId", orderId, "userId", userId, "status", status))
                 .retrieve()
                 .bodyToMono(Void.class)
@@ -55,6 +59,8 @@ public class NotificationServiceClient {
         try {
             webClient.post()
                 .uri(notificationServiceUrl + "/api/notifications/order-cancellation")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
                 .bodyValue(Map.of("orderId", orderId, "userId", userId))
                 .retrieve()
                 .bodyToMono(Void.class)

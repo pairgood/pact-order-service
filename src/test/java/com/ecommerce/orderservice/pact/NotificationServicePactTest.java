@@ -5,13 +5,11 @@ import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider;
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
-import au.com.dius.pact.core.model.RequestResponsePact;
+import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.ecommerce.orderservice.service.NotificationServiceClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.Map;
 
@@ -21,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 class NotificationServicePactTest {
 
     @Pact(consumer = "order-service", provider = "notification-service")
-    public RequestResponsePact sendOrderConfirmationPact(PactDslWithProvider builder) {
+    public V4Pact sendOrderConfirmationPact(PactDslWithProvider builder) {
         return builder
             .given("notification service is available")
             .uponReceiving("a request to send order confirmation")
@@ -37,11 +35,12 @@ class NotificationServicePactTest {
             ).build())
             .willRespondWith()
             .status(200)
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Pact(consumer = "order-service", provider = "notification-service")
-    public RequestResponsePact sendOrderStatusUpdatePact(PactDslWithProvider builder) {
+    public V4Pact sendOrderStatusUpdatePact(PactDslWithProvider builder) {
         return builder
             .given("notification service is available")
             .uponReceiving("a request to send order status update")
@@ -58,11 +57,12 @@ class NotificationServicePactTest {
             ).build())
             .willRespondWith()
             .status(200)
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Pact(consumer = "order-service", provider = "notification-service")
-    public RequestResponsePact sendOrderCancellationPact(PactDslWithProvider builder) {
+    public V4Pact sendOrderCancellationPact(PactDslWithProvider builder) {
         return builder
             .given("notification service is available")
             .uponReceiving("a request to send order cancellation")
@@ -78,7 +78,8 @@ class NotificationServicePactTest {
             ).build())
             .willRespondWith()
             .status(200)
-            .toPact();
+            .toPact()
+            .asV4Pact().get();
     }
 
     @Test

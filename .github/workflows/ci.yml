@@ -32,13 +32,12 @@ jobs:
     - name: Run unit tests
       run: ./gradlew test
       
-    # TODO: Enable when Pact compatibility issues are resolved
-    # - name: Run Pact consumer tests
-    #   run: ./gradlew pactTest
-    #   
-    # - name: Publish Pact contracts
-    #   if: github.ref == 'refs/heads/main'
-    #   run: ./gradlew pactPublish
+    - name: Run Pact consumer tests
+      run: ./gradlew pactTest
+       
+    - name: Publish Pact contracts
+      if: github.ref == 'refs/heads/main'
+      run: ./gradlew pactPublish
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
@@ -49,10 +48,9 @@ jobs:
           **/build/test-results/test/TEST-*.xml
           **/build/reports/tests/test/
           
-    # TODO: Enable when Pact tests are working          
-    # - name: Upload Pact contracts
-    #   uses: actions/upload-artifact@v4
-    #   if: always()
-    #   with:
-    #     name: pact-contracts
-    #     path: build/pacts/
+    - name: Upload Pact contracts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: pact-contracts
+        path: build/pacts/
