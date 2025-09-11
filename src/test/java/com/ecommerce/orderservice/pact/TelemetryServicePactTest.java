@@ -39,7 +39,15 @@ class TelemetryServicePactTest {
                 .stringType("httpUrl")
                 .stringType("userId")
                 .stringType("status")
-                .array("timestamp", array -> array.numberType(2025)) // LocalDateTime serializes as array
+                .array("timestamp", array -> array // LocalDateTime serializes as [year, month, day, hour, minute, second, nanosecond]
+                    .numberType(2025)    // year
+                    .numberType(1)       // month  
+                    .numberType(1)       // day
+                    .numberType(0)       // hour
+                    .numberType(0)       // minute
+                    .numberType(0)       // second
+                    .numberType(0)       // nanosecond
+                )
             ).build())
             .willRespondWith()
             .status(200)
