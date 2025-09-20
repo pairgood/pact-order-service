@@ -1,4 +1,4 @@
-name: CI with Pact
+name: CI with Pact and Playwright
 
 on:
   push:
@@ -39,6 +39,21 @@ jobs:
       if: github.ref == 'refs/heads/main'
       run: ./gradlew pactPublish
       
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium
+      
+    - name: Run Playwright user acceptance tests
+      run: ./gradlew playwrightTest -Dplaywright.headless=true
+      
+    - name: Run Playwright stability test (3 consecutive runs)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        echo "Running Playwright stability test..."
+        ./gradlew playwrightTest -Dplaywright.headless=true
+        ./gradlew playwrightTest -Dplaywright.headless=true  
+        ./gradlew playwrightTest -Dplaywright.headless=true
+        echo "All 3 Playwright test runs completed successfully!"
+      
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
@@ -47,6 +62,8 @@ jobs:
         path: |
           **/build/test-results/test/TEST-*.xml
           **/build/reports/tests/test/
+          **/build/test-results/playwrightTest/TEST-*.xml
+          **/build/reports/tests/playwrightTest/
           
     - name: Upload Pact contracts
       uses: actions/upload-artifact@v4
@@ -54,3 +71,12 @@ jobs:
       with:
         name: pact-contracts
         path: build/pacts/
+        
+    - name: Upload Playwright test artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-results
+        path: |
+          build/reports/tests/playwrightTest/
+          test-results/

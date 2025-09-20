@@ -7,6 +7,127 @@ Order management and processing service for the e-commerce microservices ecosyst
 ## Service Role: Both Consumer & Producer
 This service consumes User and Product services, and produces data/events for Payment and Notification services.
 
+## Web Interface
+This service includes a comprehensive web-based user interface for order management operations. The web interface provides:
+
+- **Order Viewing**: Browse and filter orders by user ID and status
+- **Order Details**: View comprehensive order information including items and status
+- **Order Creation**: Create new orders with multiple items
+- **Order Management**: Update order status and cancel orders
+- **Responsive Design**: Works across desktop, tablet, and mobile devices
+
+**Access the Web Interface**: http://localhost:8083
+
+## User Acceptance Testing with Playwright
+
+This project includes comprehensive Playwright user acceptance tests that validate the web interface functionality. The tests follow user story format with "As a [user], I want [goal], so that [benefit]" scenarios.
+
+### Prerequisites for Playwright Tests
+- Java 17+
+- Gradle (included wrapper)
+- Chrome/Chromium browser (auto-installed by Playwright)
+
+### Installing Playwright Dependencies
+
+```bash
+# Download and build project with Playwright dependencies
+./gradlew build
+
+# Install Playwright browsers (if needed)
+# Note: Browsers are auto-installed on first test run
+```
+
+### Running Playwright Tests
+
+```bash
+# Run all Playwright user acceptance tests
+./gradlew playwrightTest
+
+# Run tests in visible browser mode (for debugging)
+./gradlew playwrightTest -Dplaywright.headless=false
+
+# Run tests with slow motion (for debugging)
+./gradlew playwrightTest -Dplaywright.headless=false -Dplaywright.slowMo=100
+
+# Run stability test (3 consecutive runs)
+./gradlew playwrightStabilityTest
+
+# Run specific Playwright test class
+./gradlew playwrightTest --tests="*OrderManagementPlaywrightTest*"
+
+# Run all tests including unit, integration, and Playwright
+./gradlew test pactTest playwrightTest
+```
+
+### Playwright Test Coverage
+
+The Playwright tests cover the following user scenarios:
+
+#### Navigation and Interface
+- ✅ **As a user, I want to access the order management system, so that I can manage orders**
+- ✅ **As a user, I want to navigate between different sections, so that I can access all features**
+- ✅ **As a user, I want responsive design elements, so that I can use the system on different devices**
+
+#### Order Viewing and Filtering  
+- ✅ **As a user, I want to view all existing orders, so that I can see the current order status**
+- ✅ **As a user, I want to filter orders by user ID, so that I can find specific customer orders**
+- ✅ **As a user, I want to filter orders by status, so that I can focus on orders in specific states**
+- ✅ **As a user, I want to clear filters easily, so that I can see all orders again**
+
+#### Order Details
+- ✅ **As a user, I want to view detailed information about an order, so that I can see complete order details**
+- ✅ **As a user, I want to close the order details modal, so that I can return to the orders list**
+- ✅ **As a user, I want to see order items in the details modal, so that I can verify order contents**
+
+#### Order Creation
+- ✅ **As a user, I want to create a new order with valid data, so that I can add orders to the system**
+- ✅ **As a user, I want to see all required fields in the create order form, so that I know what information is needed**
+- ✅ **As a user, I want to add multiple items to an order, so that I can create orders with several products**
+- ✅ **As a user, I want to remove items from an order, so that I can correct mistakes or change the order**
+- ✅ **As a user, I want to reset the create order form, so that I can start over with a clean form**
+
+#### Order Management
+- ✅ **As an admin, I want to update order status, so that I can track order progress**
+- ✅ **As an admin, I want to cancel an order, so that I can handle order cancellation requests**
+- ✅ **As a user, I want to decline order cancellation, so that I can keep the order if I change my mind**
+
+#### User Experience
+- ✅ **As a user, I want to see validation errors for incomplete forms, so that I know what information is missing**
+- ✅ **As a user, I want to see clear error messages for failed operations, so that I understand what went wrong**
+- ✅ **As a user, I want to see proper loading states, so that I know the system is processing my requests**
+- ✅ **As a user, I want the interface to be keyboard accessible, so that I can navigate without a mouse**
+
+### Test Structure
+
+```
+src/test/java/com/ecommerce/orderservice/playwright/
+├── OrderManagementPlaywrightTest.java          # Core user interface tests
+├── OrderManagementAdvancedPlaywrightTest.java  # Advanced operations tests
+└── PlaywrightSetupTest.java                    # Framework setup verification
+```
+
+### Test Stability
+
+All Playwright tests are designed to run reliably and can be executed multiple times without flaking. The test suite includes:
+
+- **Proper wait strategies** for dynamic content
+- **Stable element selectors** using data-testid attributes where needed
+- **Cleanup procedures** to ensure test isolation
+- **Error handling** for network issues and timing variations
+
+### Debugging Playwright Tests
+
+```bash
+# Run tests with browser visible and slow motion
+./gradlew playwrightTest -Dplaywright.headless=false -Dplaywright.slowMo=500
+
+# Run single test for debugging
+./gradlew playwrightTest --tests="*shouldLoadOrderManagementHomePage*" -Dplaywright.headless=false
+
+# View test reports (after test run)
+open build/reports/tests/playwrightTest/index.html
+```
+
 ## Architecture Overview
 
 ```
