@@ -4,6 +4,7 @@ import com.ecommerce.orderservice.dto.OrderRequest;
 import com.ecommerce.orderservice.model.Order;
 import com.ecommerce.orderservice.model.OrderItem;
 import com.ecommerce.orderservice.repository.OrderRepository;
+import com.ecommerce.orderservice.telemetry.TelemetryClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,9 @@ public class OrderServiceTest {
 
     @Mock
     private NotificationServiceClient notificationServiceClient;
+
+    @Mock
+    private TelemetryClient telemetryClient;
 
     @InjectMocks
     private OrderService orderService;

@@ -4,6 +4,7 @@ import com.ecommerce.orderservice.dto.OrderRequest;
 import com.ecommerce.orderservice.model.Order;
 import com.ecommerce.orderservice.model.OrderItem;
 import com.ecommerce.orderservice.repository.OrderRepository;
+import com.ecommerce.orderservice.telemetry.TelemetryClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,18 +28,28 @@ public class OrderService {
     @Autowired
     private NotificationServiceClient notificationServiceClient;
     
+    @Autowired
+    private TelemetryClient telemetryClient;
+    
     private final WebClient webClient = WebClient.builder().build();
     
     public Order createOrder(OrderRequest orderRequest) {
+        telemetryClient.logEvent("Validating user: " + orderRequest.getUserId(), "INFO");
+        
         // Validate user exists
         boolean userExists = userServiceClient.validateUser(orderRequest.getUserId());
         if (!userExists) {
+            telemetryClient.logEvent("User validation failed: " + orderRequest.getUserId(), "ERROR");
             throw new RuntimeException("User not found");
         }
+        
+        telemetryClient.logEvent("User validated successfully: " + orderRequest.getUserId(), "INFO");
         
         Order order = new Order();
         order.setUserId(orderRequest.getUserId());
         order.setShippingAddress(orderRequest.getShippingAddress());
+        
+        telemetryClient.logEvent("Processing " + orderRequest.getItems().size() + " order items", "INFO");
         
         // Process order items
         List<OrderItem> orderItems = orderRequest.getItems().stream()
@@ -66,9 +77,12 @@ public class OrderService {
         order.setTotalAmount(totalAmount);
         
         Order savedOrder = orderRepository.save(order);
+        telemetryClient.logEvent("Order saved to database with ID: " + savedOrder.getId(), "INFO");
         
         // Send notification
         notificationServiceClient.sendOrderConfirmation(savedOrder.getId(), savedOrder.getUserId());
+        
+        telemetryClient.logEvent("Order created successfully with total amount: " + totalAmount, "INFO");
         
         return savedOrder;
     }
@@ -87,9 +101,13 @@ public class OrderService {
     }
     
     public Order updateOrderStatus(Long id, Order.OrderStatus status) {
+        telemetryClient.logEvent("Updating order status: " + id + " to " + status, "INFO");
+        
         Order order = getOrderById(id);
         order.setStatus(status);
         Order updatedOrder = orderRepository.save(order);
+        
+        telemetryClient.logEvent("Order status updated successfully: " + id, "INFO");
         
         // Send status update notification
         notificationServiceClient.sendOrderStatusUpdate(updatedOrder.getId(), updatedOrder.getUserId(), status.toString());
@@ -98,9 +116,13 @@ public class OrderService {
     }
     
     public void cancelOrder(Long id) {
+        telemetryClient.logEvent("Cancelling order: " + id, "INFO");
+        
         Order order = getOrderById(id);
         order.setStatus(Order.OrderStatus.CANCELLED);
         orderRepository.save(order);
+        
+        telemetryClient.logEvent("Order cancelled successfully: " + id, "INFO");
         
         // Send cancellation notification
         notificationServiceClient.sendOrderCancellation(order.getId(), order.getUserId());
