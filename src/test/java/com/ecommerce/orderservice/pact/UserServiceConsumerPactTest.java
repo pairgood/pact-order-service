@@ -1,4 +1,4 @@
-package com.ecommerce.orderservice.contract;
+package com.ecommerce.orderservice.pact;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
