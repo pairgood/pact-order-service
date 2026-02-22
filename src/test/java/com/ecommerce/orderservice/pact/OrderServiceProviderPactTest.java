@@ -3,6 +3,7 @@ package com.ecommerce.orderservice.pact;
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
+import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify;
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
@@ -36,6 +37,7 @@ import static org.mockito.Mockito.when;
     url = "http://localhost:9292",
     authentication = @PactBrokerAuth(username = "admin", password = "admin")
 )
+@IgnoreNoPactsToVerify  // Allow test to pass when no consumer pacts exist yet
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OrderServiceProviderPactTest {
@@ -60,7 +62,10 @@ class OrderServiceProviderPactTest {
 
     @BeforeEach
     void setUp(PactVerificationContext context) {
-        context.setTarget(new HttpTestTarget("localhost", port));
+        // Context will be null when @IgnoreNoPactsToVerify creates a placeholder test
+        if (context != null) {
+            context.setTarget(new HttpTestTarget("localhost", port));
+        }
 
         // Set up default mock behavior for telemetry client
         when(telemetryClient.startTrace(anyString(), anyString(), anyString(), anyString())).thenReturn("trace_123");
@@ -76,7 +81,10 @@ class OrderServiceProviderPactTest {
     @TestTemplate
     @ExtendWith(PactVerificationInvocationContextProvider.class)
     void verifyPact(PactVerificationContext context) {
-        context.verifyInteraction();
+        // Context will be null when @IgnoreNoPactsToVerify creates a placeholder test
+        if (context != null) {
+            context.verifyInteraction();
+        }
     }
 
     // State string must be IDENTICAL to consumer's given() — character for character
