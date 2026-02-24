@@ -8,7 +8,7 @@ spring:
     url: jdbc:h2:mem:orderdb
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
+    password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -17,6 +17,18 @@ spring:
   h2:
     console:
       enabled: true
+  boot:
+    admin:
+      client:
+        url: http://localhost:8099
+        username: admin
+        password: admin
+        instance:
+          name: ${spring.application.name}
+          prefer-ip: true
+          metadata:
+            tags:
+              environment: local
 
 services:
   user-service:
@@ -29,6 +41,42 @@ services:
 telemetry:
   service:
     url: http://localhost:8086
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState,diskSpace
+          show-details: always
+        readiness:
+          include: readinessState,db,userService,productService,notificationService,telemetryService
+          show-details: always
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  info:
+    env:
+      enabled: true
+    git:
+      enabled: true
+      mode: full
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: Order service — manages customer orders and order lifecycle
+    version: 1.0.0
 
 logging:
   level:
