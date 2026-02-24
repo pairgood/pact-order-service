@@ -19,10 +19,11 @@ public class NotificationServiceClient {
     @Autowired(required = false)
     private TelemetryClient telemetryClient;
     
-    public NotificationServiceClient() {
-        this.webClient = WebClient.builder().build();
+    @Autowired
+    public NotificationServiceClient(WebClient.Builder builder) {
+        this.webClient = builder.build();
     }
-    
+
     // Constructor for testing with custom base URL
     public NotificationServiceClient(String baseUrl) {
         this.webClient = WebClient.builder().build();

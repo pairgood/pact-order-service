@@ -19,10 +19,11 @@ public class ProductServiceClient {
     @Autowired(required = false)
     private TelemetryClient telemetryClient;
     
-    public ProductServiceClient() {
-        this.webClient = WebClient.builder().build();
+    @Autowired
+    public ProductServiceClient(WebClient.Builder builder) {
+        this.webClient = builder.build();
     }
-    
+
     // Constructor for testing with custom base URL
     public ProductServiceClient(String baseUrl) {
         this.webClient = WebClient.builder().build();

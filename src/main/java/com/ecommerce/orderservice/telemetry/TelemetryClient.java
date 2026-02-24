@@ -1,5 +1,6 @@
 package com.ecommerce.orderservice.telemetry;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,10 +21,11 @@ public class TelemetryClient {
     @Value("${spring.application.name}")
     private String serviceName;
     
-    public TelemetryClient() {
-        this.webClient = WebClient.builder().build();
+    @Autowired
+    public TelemetryClient(WebClient.Builder builder) {
+        this.webClient = builder.build();
     }
-    
+
     // Constructor for testing with custom base URL and service name
     public TelemetryClient(String baseUrl, String serviceName) {
         this.webClient = WebClient.builder().build();

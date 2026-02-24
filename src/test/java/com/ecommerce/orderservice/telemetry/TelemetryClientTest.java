@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +19,7 @@ public class TelemetryClientTest {
 
     @BeforeEach
     void setUp() {
-        telemetryClient = new TelemetryClient();
+        telemetryClient = new TelemetryClient(WebClient.builder());
         ReflectionTestUtils.setField(telemetryClient, "telemetryServiceUrl", "http://localhost:8086");
         ReflectionTestUtils.setField(telemetryClient, "serviceName", "order-service");
         
