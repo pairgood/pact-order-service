@@ -1,5 +1,6 @@
 package com.ecommerce.orderservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -44,6 +45,7 @@ public class OrderItem {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
+    @JsonIgnore
     public Order getOrder() { return order; }
     public void setOrder(Order order) { this.order = order; }
     
