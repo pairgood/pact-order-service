@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import java.math.BigDecimal;
 
@@ -19,8 +20,9 @@ public class ProductServiceClient {
     @Autowired(required = false)
     private TelemetryClient telemetryClient;
     
-    public ProductServiceClient() {
-        this.webClient = WebClient.builder().build();
+    @Autowired
+    public ProductServiceClient(Builder builder) {
+        this.webClient = builder.build();
     }
     
     // Constructor for testing with custom base URL

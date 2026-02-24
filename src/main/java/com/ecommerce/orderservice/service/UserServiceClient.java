@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 @Service
 public class UserServiceClient {
@@ -17,8 +18,9 @@ public class UserServiceClient {
     @Autowired(required = false)
     private TelemetryClient telemetryClient;
     
-    public UserServiceClient() {
-        this.webClient = WebClient.builder().build();
+    @Autowired
+    public UserServiceClient(Builder builder) {
+        this.webClient = builder.build();
     }
     
     // Constructor for testing with custom base URL

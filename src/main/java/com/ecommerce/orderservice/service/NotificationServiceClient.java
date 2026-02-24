@@ -5,22 +5,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 
 import java.util.Map;
 
 @Service
 public class NotificationServiceClient {
-    
+
     private final WebClient webClient;
-    
+
     @Value("${services.notification-service.url:http://localhost:8085}")
     private String notificationServiceUrl;
-    
+
     @Autowired(required = false)
     private TelemetryClient telemetryClient;
-    
-    public NotificationServiceClient() {
-        this.webClient = WebClient.builder().build();
+
+    @Autowired
+    public NotificationServiceClient(Builder builder) {
+        this.webClient = builder.build();
     }
     
     // Constructor for testing with custom base URL
